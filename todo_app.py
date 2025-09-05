@@ -1,16 +1,14 @@
-# todo_app.py
+import time
+import os
 
-# File to store tasks
 TASKS_FILE = "tasks.txt"
 
 # Load tasks from file
 def load_tasks():
     tasks = []
-    try:
+    if os.path.exists(TASKS_FILE):
         with open(TASKS_FILE, "r") as f:
             tasks = [line.strip() for line in f.readlines()]
-    except FileNotFoundError:
-        pass  # file doesn't exist yet
     return tasks
 
 # Save tasks to file
@@ -35,15 +33,32 @@ def add_task(tasks):
     save_tasks(tasks)
     print("Task added!")
 
+# Study Timer (Pomodoro)
+def start_study_timer():
+    try:
+        minutes = int(input("Enter study session length in minutes: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        return
+    print(f"Starting study session for {minutes} minutes...")
+    
+    for remaining in range(minutes * 60, 0, -1):
+        mins, secs = divmod(remaining, 60)
+        timer = f"{mins:02d}:{secs:02d}"
+        print(f"\rTime left: {timer}", end="")
+        time.sleep(1)
+    print("\n✅ Study session complete! Take a break.")
+
 # Main program
 def main():
     tasks = load_tasks()
     
     while True:
-        print("\n--- To-Do List ---")
+        print("\n--- To-Do + Study App ---")
         print("1. View Tasks")
         print("2. Add Task")
-        print("3. Exit")
+        print("3. Start Study Timer")
+        print("4. Exit")
         
         choice = input("Choose an option: ")
         
@@ -52,6 +67,8 @@ def main():
         elif choice == "2":
             add_task(tasks)
         elif choice == "3":
+            start_study_timer()
+        elif choice == "4":
             save_tasks(tasks)
             print("Goodbye!")
             break
